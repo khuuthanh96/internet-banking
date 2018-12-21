@@ -1,12 +1,12 @@
 <template>
-  <nav class="navbar navbar-default" role="navigation">
+  <nav class="navbar navbar-primary" role="navigation">
     <div class="container-fluid">
       <!-- Brand and toggle get grouped for better mobile display -->
       <div class="navbar-header">
         <router-link to="/" class="navbar-brand">
           <span class="glyphicon glyphicon-home"></span>
           <span>&emsp;Internet Banking</span>
-          <span v-if="account.user.roles === 'admin'">&ensp;<b><i>Admin</i></b></span>
+          <span v-if="account.status.loggedIn && account.user.roles === 'admin'">&ensp;<b class="text-danger"><i>Admin</i></b></span>
         </router-link>
       </div>
       <!-- Collect the nav links, forms, and other content for toggling -->

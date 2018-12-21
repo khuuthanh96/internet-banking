@@ -30,25 +30,86 @@ const actions = {
         
         commit('logout');
     },
-    // register({ dispatch, commit }, user) {
-    //     commit('registerRequest', user);
+    register({ dispatch, commit }, user) {
+        commit('registerRequest');
 
-    //     userService.register(user)
-    //         .then(
-    //             user => {
-    //                 commit('registerSuccess', user);
-    //                 router.push('/login');
-    //                 setTimeout(() => {
-    //                     // display success message after route change completes
-    //                     dispatch('alert/success', 'Registration successful', { root: true });
-    //                 })
-    //             },
-    //             error => {
-    //                 commit('registerFailure', error);
-    //                 dispatch('alert/error', error, { root: true });
-    //             }
-    //         );
-    // }
+        return userService.addUser(user)
+            .then(
+                data => {
+                    if(data.success) {
+                        commit('registerSuccess');
+                        dispatch('alert/success', 'Registration successful', { root: true });
+                    } else {
+                        commit('registerFailure');
+                        dispatch('alert/error', data.message, { root: true });
+                    }
+                    return data
+                },
+                error => {
+                    commit('registerFailure');
+                    dispatch('alert/error', error, { root: true });
+                }
+            );
+    },
+
+    addAccount({dispatch, commit}, userID) {
+        commit('addingRequest');
+
+        return userService.addAccount(userID)
+            .then(data => {
+                if(data.success) {
+                    commit('addingSuccess');
+                    dispatch('alert/success', 'Add new account successfully', {root: true});
+                } else {
+                    commit('addingFailure');
+                    dispatch('alert/error', data.message, {root: true});
+                };
+
+                return data
+            }, error => {
+                commit('registerFailure');
+                dispatch('alert/error', error, { root: true });
+            });
+    },
+
+    getUserList({dispatch}) {
+        return userService.getAllUser()
+            .then(data => {
+                if(!data.success) {
+                    dispatch('alert/error', data.message, {root: true});
+                }
+                return data
+            }, error => {
+                dispatch('alert/error', error, { root: true });
+            });
+    },
+
+    getUserAccounts({dispatch}, userID) {
+        return userService.getUserAccounts(userID)
+            .then(data => {
+                if(data && !data.success) {
+                    dispatch('alert/error', data.message, {root: true});
+                };
+                return data;
+            }, error => {
+                dispatch('alert/error', error, { root: true });
+            });
+    },
+
+    rechargeMoney({dispatch}, infoObj) {
+        return userService.rechargeMoney(infoObj)
+            .then(data => {
+                if(data.success) {
+                    dispatch('alert/success', `Successful recharge ${data.payload.total} for account ${data.payload.accID} `, {root: true});
+                } else {
+                    dispatch('alert/error', data.message, {root: true});
+                };
+
+                return data;
+            }, error => {
+                dispatch('alert/error', error, { root: true });
+            });
+    }
 };
 
 const mutations = {
@@ -70,15 +131,24 @@ const mutations = {
         state.status = {};
         state.user = null;
     },
-    registerRequest(state, user) {
-        state.status = { registering: true };
+    registerRequest(state) {
+        state.status.registering = true;
     },
-    registerSuccess(state, user) {
-        state.status = {};
+    registerSuccess(state) {
+        state.status.registering = false;
     },
-    registerFailure(state, error) {
-        state.status = {};
-    }
+    registerFailure(state) {
+        state.status.registering = false;
+    },
+    addingRequest(state) {
+        state.status.adding = true;
+    },
+    addingSuccess(state) {
+        state.status.adding = false;
+    },
+    addingFailure(state) {
+        state.status.adding = false;
+    },
 };
 
 export const account = {

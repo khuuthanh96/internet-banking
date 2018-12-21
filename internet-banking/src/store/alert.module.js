@@ -4,11 +4,17 @@ const state = {
 };
 
 const actions = {
-    success({ commit }, message) {
+    success({ dispatch, commit }, message) {
         commit('success', message);
+        setTimeout(() => {
+            dispatch('clear');
+        }, 5000);
     },
-    error({ commit }, message) {
+    error({dispatch, commit }, message) {
         commit('error', message);
+        setTimeout(() => {
+            dispatch('clear');
+        }, 5000);
     },
     clear({ commit }, message) {
         commit('success', message);

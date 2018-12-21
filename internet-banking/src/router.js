@@ -1,8 +1,11 @@
 import Vue from 'vue'
 import Router from 'vue-router'
-import Home from './views/Home.vue'
+import Home from './views/user/Home.vue'
 import Login from './views/Login.vue'
-import Admin from './views/Admin.vue'
+import Admin from './views/admin/Admin.vue'
+import Adduser from './views/admin/AddUser.vue'
+import Addaccount from './views/admin/AddAccount.vue'
+import Recharge from './views/admin/Recharge.vue'
 
 Vue.use(Router)
 
@@ -35,21 +38,40 @@ export const router = new Router({
       name: 'login',
       component: Login
     },
+
+    //============page for admin role==============
     {
       path: '/admin',
       name: 'admin',
       component: Admin,
       beforeEnter: (to, from, next) => {
-        let user = localStorage.getItem('user');
-        user = JSON.parse(user);
-
-        if(user.roles !== 'admin') {
-          return next(false);
-        }
-        next();
+        checkAuthorized(to, from, next);
       }
     },
-
+    {
+      path: '/adduser',
+      name: 'adduser',
+      component: Adduser,
+      beforeEnter: (to, from, next) => {
+        checkAuthorized(to, from, next);
+      }
+    },
+    {
+      path: '/addaccount',
+      name: 'addaccount',
+      component: Addaccount,
+      beforeEnter: (to, from, next) => {
+        checkAuthorized(to, from, next);
+      }
+    },
+    {
+      path: '/recharge',
+      name: 'recharge',
+      component: Recharge,
+      beforeEnter: (to, from, next) => {
+        checkAuthorized(to, from, next);
+      }
+    },
     // otherwise redirect to home
     { path: '*', redirect: '/' }
   ]
@@ -66,3 +88,14 @@ router.beforeEach((to, from, next) => {
   }
   next();
 })
+
+//helper function 
+function checkAuthorized(to, from, next) {
+  let user = localStorage.getItem('user');
+  user = JSON.parse(user);
+
+  if(user.roles !== 'admin') {
+    return next(false);
+  }
+  next();
+}

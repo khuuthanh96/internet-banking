@@ -11,12 +11,12 @@ const User = require("../models/user");
 passport.use(new LocalStrategy({usernameField: "username", session: false}, (username, password, done) => {
     User.findOne({ username })
     .then(user => {
-        if (!user) return done(null, false, {message: "Login failed!. Please try again :("});
+        if (!user) return done(null, false, {message: "Username or Password is incorret"});
 
         User.comparePassword(user._id, password, (err, same)=>{
             if(err) return done(err);
 
-            if(!same) return done(null, false, {message: 'Password is incorrect!'});
+            if(!same) return done(null, false, {message: 'Username or Password is incorret'});
             const u = user.toObject();
             delete u.password;
             

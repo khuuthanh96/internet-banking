@@ -3,7 +3,6 @@ const express = require("express");
 const router = express.Router();
 const { sign, verify } = require("../lib/jwt");
 const passport = require("passport");
-const User = require("../models/user");
 
 router.post("/login", (req, res) => {
     passport.authenticate('local', { session: false }, (err, user, info) => {
@@ -29,22 +28,19 @@ router.post("/refreshtoken", (req, res) => {
     verify(req.body.refreshToken)
         .then(async (payload) => {
             if (payload.rt) {
-                const accesstoken = await sign(payload.uID, "1h");
+                const accesstoken = await sign({uID: payload.uID}, "10h");
                 return res.json({ accesstoken });
             } else {
                 return res.status(401).json({
                     rt: true, //use for distinguish with accesstoken invalid
                     message: "Invalid token!",
-                    user: {}
                 })
             }
         })
         .catch(err => {
-            console.log(JSON.stringify(err));
             return res.status(401).json({
                 rt: true,
                 message: err.message,
-                user: {}
             })
         });
 })

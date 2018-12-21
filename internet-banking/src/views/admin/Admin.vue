@@ -1,7 +1,9 @@
 <template>
-  <div class="admin">
-    <h1>This is admin</h1>
-    <button type="button" class="btn btn-primary" @click="handleLogout">Logout</button>
+  <div class="admin text-center">
+    <h1 style="margin-top:0px;">Admin Page</h1>
+    <p>Welcome Admin
+      <b>{{account.user.name}}</b>
+    </p>
   </div>
 </template>
 
@@ -12,7 +14,9 @@ export default {
   name: "admin",
   components: {},
   computed: {
-    ...mapState("account", ["status"])
+    ...mapState({
+      account: state => state.account
+    })
   },
   methods: {
     ...mapActions("account", ["logout"]),
