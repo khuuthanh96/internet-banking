@@ -14,7 +14,7 @@ async function rolesAuthorized(uID, roles) {
         };
     };
     return false;
-}
+};
 
 router.get("/", (req, res) => res.json({ message: `Hello ${req.user.name}` }));
 
@@ -171,4 +171,4 @@ router.get("/accounts/:userId", async (req, res) => {
     res.json({ success: true, message: "success", accounts })
 });
 
-module.exports = router
+module.exports = router;

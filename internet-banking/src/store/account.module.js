@@ -7,9 +7,9 @@ const state = user
     : { status: {}, user: null };
 
 const actions = {
-    login({ dispatch, commit }, { username, password }) {
+    login({ dispatch, commit }, { username, password, recaptchaToken }) {
         commit('loginRequest', { username });
-        userService.login(username, password)
+        userService.login(username, password, recaptchaToken)
             .then(
                 user => {
                     commit('loginSuccess', user);
@@ -21,7 +21,7 @@ const actions = {
                 },
                 error => {
                     commit('loginFailure');
-                    dispatch('alert/error', error.message, { root: true });
+                    dispatch('alert/error', error.message || error , { root: true });
                 }
             );
     },

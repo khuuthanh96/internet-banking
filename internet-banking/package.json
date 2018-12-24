@@ -9,6 +9,7 @@
   "dependencies": {
     "bootstrap337": "^3.3.7",
     "vue": "^2.5.17",
+    "vue-recaptcha": "^1.1.1",
     "vue-router": "^3.0.1",
     "vue2-animate": "^2.1.0",
     "vuex": "^3.0.1"

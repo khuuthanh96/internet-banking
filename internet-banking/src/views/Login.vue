@@ -8,7 +8,7 @@
       <div class="col-sm-4 col-md-4"></div>
       <div class="col-sm-4 col-md-4">
         <div class="row">
-          <form @submit.prevent="handleSubmit" class="form-horizontal text-right">
+          <form @submit.prevent="handleSubmit" action="javascript:alert(grecaptcha.getResponse(widgetId1));" class="form-horizontal text-right">
             <div class="form-group">
               <label for="txtUsername" class="col-sm-3">Username:</label>
               <div class="col-sm-8">
@@ -33,8 +33,16 @@
               </button>
               <img
                 v-show="status.loggingIn"
-                src="data:image/gif;base64,R0lGODlhEAAQAPIAAP///wAAAMLCwkJCQgAAAGJiYoKCgpKSkiH/C05FVFNDQVBFMi4wAwEAAAAh/hpDcmVhdGVkIHdpdGggYWpheGxvYWQuaW5mbwAh+QQJCgAAACwAAAAAEAAQAAADMwi63P4wyklrE2MIOggZnAdOmGYJRbExwroUmcG2LmDEwnHQLVsYOd2mBzkYDAdKa+dIAAAh+QQJCgAAACwAAAAAEAAQAAADNAi63P5OjCEgG4QMu7DmikRxQlFUYDEZIGBMRVsaqHwctXXf7WEYB4Ag1xjihkMZsiUkKhIAIfkECQoAAAAsAAAAABAAEAAAAzYIujIjK8pByJDMlFYvBoVjHA70GU7xSUJhmKtwHPAKzLO9HMaoKwJZ7Rf8AYPDDzKpZBqfvwQAIfkECQoAAAAsAAAAABAAEAAAAzMIumIlK8oyhpHsnFZfhYumCYUhDAQxRIdhHBGqRoKw0R8DYlJd8z0fMDgsGo/IpHI5TAAAIfkECQoAAAAsAAAAABAAEAAAAzIIunInK0rnZBTwGPNMgQwmdsNgXGJUlIWEuR5oWUIpz8pAEAMe6TwfwyYsGo/IpFKSAAAh+QQJCgAAACwAAAAAEAAQAAADMwi6IMKQORfjdOe82p4wGccc4CEuQradylesojEMBgsUc2G7sDX3lQGBMLAJibufbSlKAAAh+QQJCgAAACwAAAAAEAAQAAADMgi63P7wCRHZnFVdmgHu2nFwlWCI3WGc3TSWhUFGxTAUkGCbtgENBMJAEJsxgMLWzpEAACH5BAkKAAAALAAAAAAQABAAAAMyCLrc/jDKSatlQtScKdceCAjDII7HcQ4EMTCpyrCuUBjCYRgHVtqlAiB1YhiCnlsRkAAAOwAAAAAAAAAAAA=="
+                src="/loading.gif"
               >
+            </div>
+            <div class="form-group" style="margin-left: 35px;">
+                <VueRecaptcha
+                  ref="recaptcha"
+                  @verify="onCaptchaVerified"
+                  @expired="onCaptchaExpired"
+                  sitekey="6LfM-4MUAAAAAOHX7VEw7MxE021Pmi4V1Ma7DPim">
+                </VueRecaptcha>
             </div>
           </form>
         </div>
@@ -46,6 +54,7 @@
 
 <script>
 import { mapState, mapActions } from "vuex";
+import VueRecaptcha from "vue-recaptcha"
 
 export default {
   name: "Login",
@@ -53,11 +62,15 @@ export default {
     return {
       username: "",
       password: "",
-      submitted: false
+      submitted: false,
+      recaptchaToken: ""
     };
   },
   computed: {
     ...mapState("account", ["status"])
+  },
+  components: {
+    VueRecaptcha
   },
   created() {
     // reset login status
@@ -67,10 +80,18 @@ export default {
     ...mapActions("account", ["login", "logout"]),
     handleSubmit(e) {
       this.submitted = true;
-      const { username, password } = this;
+      const { username, password, recaptchaToken } = this;
       if (username && password) {
-        this.login({ username, password });
+        self.grecaptcha.reset();
+        this.login({ username, password, recaptchaToken });
       }
+    },
+    onCaptchaVerified: function (recaptchaToken) {
+      const self = this;
+      self.recaptchaToken = recaptchaToken;
+    },
+    onCaptchaExpired: function () {
+      self.grecaptcha.reset();
     }
   }
 };

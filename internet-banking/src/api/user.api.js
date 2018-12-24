@@ -13,13 +13,13 @@ export const userService = {
 };
 
 //authenticate api
-function login(username, password) {
+function login(username, password, recaptchaToken) {
     const requestOptions = {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({ username, password })
+        body: JSON.stringify({ username, password, recaptchaToken })
     };
-
+    
     return fetch(`${conf.api}/auth/login`, requestOptions)
         .then(response => {
             return response.text()
@@ -29,11 +29,14 @@ function login(username, password) {
                     const error = (data && data.message) || response.statusText;
                     return Promise.reject(error);
                 }
-
+    
                 localStorage.setItem('user', JSON.stringify(data.user));
                 return data.user;
             })
 
+        }, error => {
+            console.log("error ", error)
+            return Promise.reject(error);
         });
 }
 
