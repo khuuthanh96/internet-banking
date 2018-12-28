@@ -10,13 +10,13 @@
         <div class="row">
           <form @submit.prevent="handleSubmit" action="javascript:alert(grecaptcha.getResponse(widgetId1));" class="form-horizontal text-right">
             <div class="form-group">
-              <label for="txtUsername" class="col-sm-3">Username:</label>
+              <label for="txtUsername" class="col-sm-3 fix-vertical-align">Username:</label>
               <div class="col-sm-8">
                 <input type="text" v-model="username" class="form-control" id="txtUsername">
               </div>
             </div>
             <div class="form-group">
-              <label for="txtPassword" class="col-sm-3">Password:</label>
+              <label for="txtPassword" class="col-sm-3 fix-vertical-align">Password:</label>
               <div class="col-sm-8">
                 <input type="password" v-model="password" class="form-control" id="txtPassword">
               </div>
@@ -98,4 +98,11 @@ export default {
 </script>
 
 <style lang="css" scoped>
+.fix-vertical-align
+{
+  padding-top: 6px;
+  padding-bottom: 6px;
+  margin: 0;
+  margin-top: 1px;
+}
 </style>
