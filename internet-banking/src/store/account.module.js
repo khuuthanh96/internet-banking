@@ -54,7 +54,6 @@ const actions = {
 
     addAccount({dispatch, commit}, userID) {
         commit('addingRequest');
-
         return userService.addAccount(userID)
             .then(data => {
                 if(data.success) {
@@ -67,7 +66,7 @@ const actions = {
 
                 return data
             }, error => {
-                commit('registerFailure');
+                commit('addingFailure');
                 dispatch('alert/error', error, { root: true });
             });
     },
@@ -84,29 +83,56 @@ const actions = {
             });
     },
 
-    getUserAccounts({dispatch}, userID) {
+    getUserAccounts({dispatch, commit}, userID) {
+        commit('addingRequest');
+        
         return userService.getUserAccounts(userID)
             .then(data => {
                 if(data && !data.success) {
                     dispatch('alert/error', data.message, {root: true});
                 };
+                commit('addingSuccess');
                 return data;
             }, error => {
+                commit('addingFailure');
                 dispatch('alert/error', error, { root: true });
             });
     },
 
-    rechargeMoney({dispatch}, infoObj) {
+    rechargeMoney({dispatch, commit}, infoObj) {
+        commit('addingRequest');
+
         return userService.rechargeMoney(infoObj)
             .then(data => {
                 if(data.success) {
-                    dispatch('alert/success', `Successful recharge ${data.payload.total} for account ${data.payload.accID} `, {root: true});
+                    dispatch('alert/success', `Successful recharge ${data.payload.total} for account ${data.payload.accNumber} `, {root: true});
                 } else {
                     dispatch('alert/error', data.message, {root: true});
                 };
 
+                commit('addingSuccess');
                 return data;
             }, error => {
+                commit('addingFailure');
+                dispatch('alert/error', error, { root: true });
+            });
+    },
+
+    closeAccount({dispatch, commit}, accountID) {
+        commit('addingRequest');
+
+        return userService.closeAccount(accountID)
+            .then(data => {
+                if(data.success) {
+                    dispatch('alert/success', `Successful closed ${data.account.number}`, {root: true});
+                } else {
+                    dispatch('alert/error', data.message, {root: true});
+                };
+
+                commit('addingSuccess');
+                return data;
+            }, error => {
+                commit('addingFailure');
                 dispatch('alert/error', error, { root: true });
             });
     }

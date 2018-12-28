@@ -21,7 +21,7 @@
           <li v-if="account.status.loggedIn">
             <router-link to="/profile" class="btn btn-link">
               <span class="glyphicon glyphicon-user"></span>
-              &emsp;{{account.user.name}}
+              &emsp;<b class="username">{{account.user.name}}</b>
             </router-link>
           </li>
           <li v-if="account.status.loggedIn" class="dropdown">
@@ -66,4 +66,7 @@ export default {
 </script>
 
 <style lang="css" scoped>
+.username {
+  font-size: 17px;
+}
 </style>

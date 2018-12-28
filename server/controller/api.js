@@ -127,13 +127,13 @@ router.put("/account/:accId",async (req, res) => {
 
     const accId = req.params.accId;
     const {total} = req.body;
-    console.log(accId)
-    const success = await Account.updateBalance(accId, parseInt(total), true);
-    if(!success) return res.json({ success: false, message: "Update account's balance failed"});
+
+    const accountInfo = await Account.updateBalance(accId, parseInt(total), true);
+    if(!accountInfo) return res.json({ success: false, message: "Update account's balance failed"});
 
     res.json({ success: true, message: "success", payload:{
         total: parseInt(total),
-        accID: accId
+        accNumber: accountInfo.number
     }});    
 });
 
@@ -168,7 +168,32 @@ router.get("/accounts/:userId", async (req, res) => {
     const accounts = await Account.getAccountsUser(userId, req.user.uID);
     if(!accounts) return res.json({ success: false, message: "Get user's accounts failed"});
     
-    res.json({ success: true, message: "success", accounts })
+    res.json({ success: true, message: "success", accounts });
+});
+
+//delete account
+router.delete("/account/:accId", async (req, res) => {
+    const accId = req.params.accId;
+
+    let account = await Account.getAccount(accId);
+    if(!account) return res.json({ success: false, message: "Get account info failed"});
+
+    if (account.userID != req.user.uID) {
+        res.json({ success: false, message: "You don't have right" });
+        return;
+    }
+    if (account.balance > 0) {
+        res.json({ success: false, message: "Account's balance must be zero" });
+        return;
+    }
+
+    const success = await Account.deleteAccount(accId);
+    if (!success) {
+        res.json({ success: false, message: "Closing account failed" });
+        return;
+    }
+
+    res.json({ success: true, message: "success", account });
 });
 
 module.exports = router;

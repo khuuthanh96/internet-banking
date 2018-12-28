@@ -5,7 +5,7 @@
         <h3 class="panel-title">Recharge Money Page</h3>
       </div>
       <div class="panel-body">
-        <h3 class="text-muted">Account Recharge Money</h3>
+        <h3 class="text-muted page-title">Account Recharge Money</h3>
         <form class="form-horizontal text-right">
           <div class="form-group">
             <label for="selectUser" class="col-sm-3">
@@ -28,7 +28,7 @@
                   :key="user._id"
                   :selected="user === selectedUser"
                   :value="user"
-                >{{user.username}}</option>
+                >{{user.username}} - {{user.name}}</option>
               </select>
             </div>
           </div>
@@ -54,7 +54,7 @@
                   :key="a._id"
                   :selected="u === selectedAccount"
                   :value="a._id"
-                >{{a._id}}</option>
+                >{{a.number}}</option>
               </select>
             </div>
           </div>
@@ -166,6 +166,7 @@ export default {
         .then(data => {
           if(data && data.success) {
             self.selectedAccount = "Choose account"
+            self.inputMoney = null
           }
         })
     },

@@ -9,7 +9,8 @@ export const userService = {
     getAllUser,
     addAccount,
     getUserAccounts,
-    rechargeMoney
+    rechargeMoney,
+    closeAccount
 };
 
 //authenticate api
@@ -126,7 +127,7 @@ function getUserAccounts(userID) {
     };
 
     return fetch(`${conf.api}/api/accounts/${userID}`, requestOptions)
-    .then(res => handleResponse(res, getUserAccounts))
+    .then(res => handleResponse(res, getUserAccounts, userID))
     .then(data => data)
     .catch(err => err)
 }
@@ -139,7 +140,19 @@ function rechargeMoney(infoObj) {
     };
 
     return fetch(`${conf.api}/api/account/${infoObj.accID}`, requestOptions)
-    .then(res => handleResponse(res, rechargeMoney))
+    .then(res => handleResponse(res, rechargeMoney, infoObj))
+    .then(data => data)
+    .catch(err => err)
+}
+
+function closeAccount(accID) {
+    const requestOptions = {
+        method: 'DELETE',
+        headers: { ...authHeader(), 'Content-Type': 'application/json' }
+    };
+
+    return fetch(`${conf.api}/api/account/${accID}`, requestOptions)
+    .then(res => handleResponse(res, closeAccount, accID))
     .then(data => data)
     .catch(err => err)
 }

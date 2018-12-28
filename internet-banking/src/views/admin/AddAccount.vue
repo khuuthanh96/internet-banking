@@ -20,7 +20,7 @@
                   :key="u._id"
                   :selected="u === selectedUser"
                   :value="u"
-                >{{u.username}}</option>
+                >{{u.username}} - {{u.name}}</option>
               </select>
             </div>
           </div>
@@ -28,7 +28,7 @@
           <div class="form-group">
             <label for="txtName" class="col-sm-3">Name:</label>
             <div class="col-sm-8">
-              <input type="text" class="plaintext" id="txtName" :value="selectedUser.name" readonly>
+              <input type="text" class="plaintext" id="txtName" :value="selectedUser.name" placeholder="Account owner name" readonly>
             </div>
           </div>
 
@@ -40,6 +40,7 @@
                 class="plaintext"
                 id="txtEmail"
                 :value="selectedUser.email"
+                placeholder="Account owner email"
                 readonly
               >
             </div>
@@ -52,6 +53,7 @@
                 class="plaintext"
                 id="txtPhone"
                 :value="selectedUser.phone"
+                placeholder="Account owner phone"
                 readonly
               >
             </div>
