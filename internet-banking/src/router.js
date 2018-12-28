@@ -7,6 +7,8 @@ import Adduser from './views/admin/AddUser.vue'
 import Addaccount from './views/admin/AddAccount.vue'
 import Recharge from './views/admin/Recharge.vue'
 
+import Accounts from './views/user/Accounts.vue'
+
 Vue.use(Router)
 
 export const router = new Router({
@@ -71,6 +73,12 @@ export const router = new Router({
       beforeEnter: (to, from, next) => {
         checkAuthorized(to, from, next);
       }
+    },
+    //============page for user role==============
+    {
+      path: '/accounts',
+      name: 'account',
+      component: Accounts
     },
     // otherwise redirect to home
     { path: '*', redirect: '/' }

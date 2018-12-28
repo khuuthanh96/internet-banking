@@ -19,7 +19,7 @@ const adCategories = [
 const userCategories = [
     {
         id: 200,
-        path: "account",
+        path: "accounts",
         name: "My Account",
     },
     {
@@ -36,12 +36,7 @@ const userCategories = [
         id: 203,
         path: "transaction",
         name: "Transaction",
-    },
-    {
-        id: 204,
-        path: "closeaccount",
-        name: "Close Account",
     }
 ]
 
-module.exports = { adCategories, userCategories }
+export { adCategories, userCategories }

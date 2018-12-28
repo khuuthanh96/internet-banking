@@ -2,13 +2,30 @@ const mongoose = require("mongoose");
 const Transaction = require("./transaction");
 const User = require("./user");
 
-const accountSchema = mongoose.Schema({
+const autoIncrement = require('mongoose-auto-increment');
+const connection = mongoose.createConnection(process.env.DATABASE_LOCAL_URL);
+
+const ActiveAccount = true,
+      ClosedAccount = false
+
+autoIncrement.initialize(connection);
+
+const accountSchema = new mongoose.Schema({
     userID: { type: mongoose.Schema.Types.ObjectId, required: true, ref: "User", trim: true },
+    number: { type: Number, required: true, unique: true },
     balance: { type: Number, default: 0 },
-    historyTransaction: [{ type: mongoose.Schema.Types.ObjectId, ref: "Transaction"}]
+    historyTransaction: [{ type: mongoose.Schema.Types.ObjectId, ref: "Transaction"}],
+    status: { type: Boolean, default: true } //account open or closed state
 });
 
-const AccountModel = mongoose.model('Account', accountSchema);
+accountSchema.plugin(autoIncrement.plugin, { 
+    model: 'Account', 
+    field: 'number',
+    startAt: 1000000000,
+    incrementBy: 1
+})
+
+const AccountModel = connection.model('Account', accountSchema);
 
 class Account extends AccountModel {
     static async addAccount(userID) {
@@ -52,7 +69,7 @@ class Account extends AccountModel {
     };
 
     static getAccount(accountId) {
-        return Account.findById(accountId)
+        return Account.findOne({ _id: accountId, status: ActiveAccount })
             .then(async (account) => {
                 if (!account) return false;
                 const acc = account.toObject();
@@ -71,14 +88,14 @@ class Account extends AccountModel {
                 return acc;
             })
             .catch(err => {
-                console.log("Account.findById: got error: ", err.message);
+                console.log("Account.find: got error: ", err.message);
                 return false;
             });
     };
 
     static async getAllAccount(doerID) {
         const doer = await User.getUser(doerID);
-        return Account.find()
+        return Account.find({ status: ActiveAccount })
             .then(accounts => {
                 if(doer.roles !== "super") {
                     return accounts.map(acc => {
@@ -98,10 +115,9 @@ class Account extends AccountModel {
     static async getAccountsUser(userID, doerID) {
         const user = await User.getUser(userID);
         const doer = await User.getUser(doerID);
-
-        return Account.find({ userID })
+        return Account.find({ userID, status: ActiveAccount })
             .then(accounts => {
-                if (doer._id != user._id && doer.roles === "user" || doer.roles === "admin") {
+                if (userID !== doerID && doer.roles === "user" || doer.roles === "admin") {
                     return accounts.map(acc => {
                         acc = acc.toObject();
                         delete acc.balance;
@@ -113,7 +129,6 @@ class Account extends AccountModel {
                         return acc
                     })
                 }
-                
                 return accounts.map(acc => {
                     acc = acc.toObject();
                     
@@ -149,6 +164,7 @@ class Account extends AccountModel {
         };
 
         return Account.findByIdAndUpdate(accountId, {$set: { balance: newBalance }})
+            .then(res => res)
             .catch(err => {
                 console.log("Account.updateBalance: got error: ", err.message);
                 return false
@@ -166,6 +182,15 @@ class Account extends AccountModel {
                 console.log("Account.addTransaction: got error: ", err.message)
             });
     };
+
+    static deleteAccount(accountId) {
+        return Account.findByIdAndUpdate(accountId, {$set: { status: ClosedAccount }})
+        .then(res => res)
+        .catch(err => {
+            console.log("Account.deleteAccount: got error: ", err.message);
+            return false
+        });
+    }
 };
 
 module.exports = Account;
