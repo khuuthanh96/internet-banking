@@ -8,6 +8,7 @@ import Addaccount from './views/admin/AddAccount.vue'
 import Recharge from './views/admin/Recharge.vue'
 
 import Accounts from './views/user/Accounts.vue'
+import Transfer from './views/user/Transfer.vue'
 
 Vue.use(Router)
 
@@ -80,6 +81,12 @@ export const router = new Router({
       name: 'account',
       component: Accounts
     },
+    {
+      path: '/transfer',
+      name: 'transfer',
+      component: Transfer
+    },
+    
     // otherwise redirect to home
     { path: '*', redirect: '/' }
   ]

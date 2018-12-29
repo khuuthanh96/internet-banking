@@ -107,15 +107,6 @@ export default {
       getUserAccounts: "account/getUserAccounts",
       closingUserAccount: "account/closeAccount"
     }),
-    handleSubmit(e) {
-      const self = this;
-      self.getUserAccounts(self.account.user._id)
-      .then(data => {
-        if(data && data.success) {
-          self.listAccount = data.accounts;
-        };
-      })
-    },
     handleOption() {
       this.optClicked = !this.optClicked
     },
