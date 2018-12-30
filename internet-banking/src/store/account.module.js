@@ -192,6 +192,36 @@ const actions = {
                 dispatch('alert/error', error, { root: true });
             });
     },
+
+    getHintOfUser({dispatch, commit}, userId) {
+        return userService.getHintOfUser(userId)
+            .then(data => {
+                if(data && !data.success) {
+                    dispatch('alert/error', data.message, {root: true});
+                };
+                return data;
+            }, error => {
+                dispatch('alert/error', error, { root: true });
+            });
+    },
+
+    addHintForUser({dispatch, commit}, infoObj) {
+        commit('addingRequest');
+        return userService.addHintForUser(infoObj)
+            .then(data => {
+                if(data && !data.success) {
+                    dispatch('alert/error', data.message, {root: true});
+                } else {
+                    dispatch('alert/success', "Add new hint successful", {root: true});
+                };
+
+                commit('addingSuccess');
+                return data;
+            }, error => {
+                commit('addingSuccess');
+                dispatch('alert/error', error, { root: true });
+            });
+    }
 };
 
 const mutations = {

@@ -7,21 +7,6 @@
       <div class="panel-body">
         <!-- <div class="row"> -->
         <h3 class="text-muted page-title">Accounts List</h3>
-        <!-- <span class="text-center col-sm-2" style="margin-top: 20px;
-    margin-bottom: 10px;">
-          <button
-            type="button"
-            class="btn btn-info"
-            @click="handleSubmit"
-            :disabled="account.status.adding"
-          >
-            <span class="glyphicon glyphicon-refresh"></span>
-            Reload
-          </button>
-          <img v-show="account.status.adding" src="/loading.gif">
-        </span> -->
-        <!-- </div> -->
-        
 
         <AccountBox
         v-for="a in listAccount"

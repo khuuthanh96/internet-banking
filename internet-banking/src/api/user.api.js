@@ -14,7 +14,9 @@ export const userService = {
     getAccount,
     createTransaction,
     verifyTransaction,
-    getAllAccountHistoryTrans
+    getAllAccountHistoryTrans,
+    getHintOfUser,
+    addHintForUser
 };
 
 //authenticate api
@@ -218,6 +220,35 @@ function getAllAccountHistoryTrans(accId) {
     .then(data => data)
     .catch(err => err)
 }
+
+function addHintForUser(infoObj) {
+    const requestOptions = {
+        method: 'POST',
+        headers: { ...authHeader(), 'Content-Type': 'application/json' },
+        body: JSON.stringify({
+            username: infoObj.username,
+            accNumber: infoObj.accNumber
+        })
+    };
+
+    return fetch(`${conf.api}/api/user/hintAccnumber/${infoObj.userId}`, requestOptions)
+    .then(res => handleResponse(res, addHintForUser, infoObj))
+    .then(data => data)
+    .catch(err => err)
+}
+
+function getHintOfUser(userId) {
+    const requestOptions = {
+        method: 'GET',
+        headers: { ...authHeader(), 'Content-Type': 'application/json' }
+    };
+
+    return fetch(`${conf.api}/api/hint/user/${userId}`, requestOptions)
+    .then(res => handleResponse(res, getHintOfUser, userId))
+    .then(data => data)
+    .catch(err => err)
+}
+
 //helper function
 function handleResponse(response, cb, param1, param2, param3) {
     return response.text()

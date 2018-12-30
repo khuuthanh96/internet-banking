@@ -202,7 +202,8 @@ export default {
         phone: ""
       },
       transactionId: null,
-      myerror: null
+      myerror: null,
+      hintList: []
     };
   },
   computed: {
@@ -217,6 +218,22 @@ export default {
         self.listAccount = data.accounts;
       }
     });
+
+    self.getHintOfUser(self.account.user._id)
+    .then(data => {
+      if(data && data.success) {
+        self.hintList = data.hintList;
+      }
+    })
+  },
+  watch: {
+    inputAccount: function() {
+      const self=this;
+      const hint = self.hintList.find(h => h.username === self.inputAccount);
+      if(hint) {
+        self.inputAccount=hint.accNumber;
+      }
+    }
   },
   methods: {
     ...mapActions({
@@ -226,7 +243,8 @@ export default {
       getUserAccounts: "account/getUserAccounts",
       getAccount: "account/getAccount",
       createTransaction: "account/createTransaction",
-      verifyTransaction: "account/verifyTransaction"
+      verifyTransaction: "account/verifyTransaction",
+      getHintOfUser: "account/getHintOfUser"
     }),
     handleSearch() {
       const self = this;
@@ -235,7 +253,14 @@ export default {
         .then(data => {
           if (data && data.success){
             self.accountInfo = data.account;
-          }
+          } else {
+            self.accountInfo = {
+              _id: null,
+              owner: "",
+              email: "",
+              phone: ""
+            }
+          };
         })
 
       }

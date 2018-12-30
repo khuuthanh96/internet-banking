@@ -1,14 +1,16 @@
 const express = require("express");
 const router = express.Router();
 
+
 const User = require("../models/user");
 const { Transaction, DEFAULT_FEE } = require("../models/transaction")
 const Account = require("../models/account");
+const Hint = require("../models/hint");
 
 //check roles function
 async function rolesAuthorized(uID, roles) {
     const u = await User.getUser(uID).then(user => user);
-
+    
     for (let i = 0; i < roles.length; i++) {
         if (u.roles === roles[i]) {
             return true;
@@ -105,6 +107,23 @@ router.post("/user", async (req, res) => {
         res.json({ success: false, message: err.message});
     });
 });
+
+//add fav receiver
+router.post("/user/hintAccnumber/:userId", async (req, res) => {
+    const userId = req.params.userId;
+    let {accNumber, username} = req.body;
+    const acc = await Account.getAccountWithNumber(accNumber);
+    if (!acc) return res.json({ success: false, message: "Can't find account number"});;
+
+    if (username == "" || typeof username != "string") {
+        username = acc.owner;
+    }
+
+    const resp = await User.addHintAccnumber(userId, accNumber, username);
+    if (!resp) return res.json({ success: false, message: "Add new hint failed"});
+
+    res.json({ success: true, message: "success", hint: resp});
+})
 
 //=========================================ACCOUNT=========================================
 //create new account
@@ -292,5 +311,32 @@ router.get("/transactions/:accId", async (req, res) => {
     }
 
     res.json({ success: true, message: "success", trans });
+})
+
+//=========================================HINT=========================================
+router.post("/hint", async (req, res) => {
+    const {accNumber, username} = req.body;
+
+    const hint = await Hint.createHintAccount(accNumber, username);
+    if (!hint) return res.json({ success: false, message: "Create new hint failed"});
+
+    res.json({ success: true, message: "success", hint});
+});
+
+router.get("/hint/user/:userId", async(req, res) => {
+    const userId = req.params.userId;
+
+    const user = await User.getUser(userId);
+    if (!user) return res.json({ success: false, message: "UserId not found"});
+
+    let hintList = [];
+    for (let i = 0; i < user.hintAccnumber.length; i++) {
+        let hint = await Hint.getHintAccount(user.hintAccnumber[i]) 
+        if(hint) {
+            hintList.push(hint);
+        }
+    }
+    
+    res.json({ success: true, message: "success", hintList});
 })
 module.exports = router;
