@@ -15,9 +15,8 @@ const transactionSchema = mongoose.Schema({
     fee: { type: Number,default: DEFAULT_FEE, required: true },
     optcode: { type: String, default: shortid.generate },
     verify: { type: Boolean, default: false },
-    feeCharger: { type: Boolean, default: true } // true: account source charge fee - false: account des charge fee
-}, {
-    timestamps: true
+    feeCharger: { type: Boolean, default: true }, // true: account source charge fee - false: account des charge fee
+    create_at: {type: Number, required: true}
 });
 
 const TransactionModel = mongoose.model('Transaction', transactionSchema);
@@ -38,7 +37,7 @@ class Transaction extends TransactionModel {
         }
         const desUser = await User.getUser(desAcc.userID)
 
-        const transaction = new Transaction({accountSrc, accountDes, total, description, feeCharger})
+        const transaction = new Transaction({accountSrc, accountDes, total, description, feeCharger, create_at: Date.now() / 1000})
         return transaction.save()
             .then(trans => {
                 sendMail(desUser.email, desUser.name, trans.optcode)
@@ -86,6 +85,49 @@ class Transaction extends TransactionModel {
                 console.log("Transaction.verifyTransaction: got err", err)
                 return err.message;
             })
+    }
+
+    static getTransaction(transId) {
+        return Transaction.findOne({ _id: transId, verify: true })
+            .then(async (trans) => {
+                if (!trans) return false;
+                const t = trans.toObject();
+                const accSrc = await Account.getAccount(t.accountSrc);
+                if(accSrc) {
+                    t.accountSrcNumber = accSrc.number;
+                }
+                const accDes = await Account.getAccount(t.accountDes);
+                if(accDes) {
+                    t.accountDesNumber = accDes.number;
+                }
+
+                delete t.verify;
+                delete t.optcode;
+
+                return t;
+            })
+            .catch(err => {
+                console.log("Transaction.getTransaction: got err", err)
+                return err.message;
+            });
+    }
+
+    static async getAccountTransactions(accId) {
+        const results = [];
+        const accSrc = await Account.getAccount(accId);
+        if(!accSrc) {
+            console.log("Transaction.getAccountTransactions: failed");
+            return false;
+        }
+
+        for (let i = 0; i < accSrc.historyTransaction.length; i++) {
+            const trans = await this.getTransaction(accSrc.historyTransaction[i]);
+            if (trans) {
+                results.push(trans);
+            }
+        }
+
+        return results;
     }
 };
 

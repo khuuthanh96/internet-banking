@@ -52,7 +52,7 @@
                 <option
                   v-for="a in listAccount"
                   :key="a._id"
-                  :selected="u === selectedAccount"
+                  :selected="a._id === selectedAccount"
                   :value="a._id"
                 >{{a.number}}</option>
               </select>

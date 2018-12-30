@@ -1,5 +1,4 @@
 const mongoose = require("mongoose");
-const { Transaction } = require("./transaction");
 const User = require("./user");
 
 const autoIncrement = require('mongoose-auto-increment');

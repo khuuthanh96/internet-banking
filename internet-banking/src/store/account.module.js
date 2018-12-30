@@ -179,7 +179,19 @@ const actions = {
             }, error => {
                 dispatch('alert/error', error, { root: true });
             });
-    }
+    },
+
+    getAllAccountHistoryTrans({dispatch, commit}, accountID) {
+        return userService.getAllAccountHistoryTrans(accountID)
+            .then(data => {
+                if(data && !data.success) {
+                    dispatch('alert/error', data.message, {root: true});
+                }
+                return data;
+            }, error => {
+                dispatch('alert/error', error, { root: true });
+            });
+    },
 };
 
 const mutations = {

@@ -269,4 +269,28 @@ router.put("/transaction/verify/:transId", async (req, res) => {
 
     res.json({ success: true, message: "success", trans });
 });
+
+router.get("/transaction/:transId", async (req, res) => {
+    const transId = req.params.transId;
+
+    const trans = await Transaction.getTransaction(transId);
+    if (!trans) {
+        res.json({ success: false, message: "Transaction not found" });
+        return;
+    }
+
+    res.json({ success: true, message: "success", trans });
+})
+
+router.get("/transactions/:accId", async (req, res) => {
+    const accId = req.params.accId;
+
+    const trans = await Transaction.getAccountTransactions(accId);
+    if (!trans) {
+        res.json({ success: false, message: "Transactions not found" });
+        return;
+    }
+
+    res.json({ success: true, message: "success", trans });
+})
 module.exports = router;

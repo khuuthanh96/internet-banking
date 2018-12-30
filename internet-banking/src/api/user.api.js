@@ -13,7 +13,8 @@ export const userService = {
     closeAccount,
     getAccount,
     createTransaction,
-    verifyTransaction
+    verifyTransaction,
+    getAllAccountHistoryTrans
 };
 
 //authenticate api
@@ -202,6 +203,18 @@ function verifyTransaction(infoObj) {
 
     return fetch(`${conf.api}/api/transaction/verify/${infoObj.transID}`, requestOptions)
     .then(res => handleResponse(res, verifyTransaction, infoObj))
+    .then(data => data)
+    .catch(err => err)
+}
+
+function getAllAccountHistoryTrans(accId) {
+    const requestOptions = {
+        method: 'GET',
+        headers: { ...authHeader(), 'Content-Type': 'application/json' }
+    };
+
+    return fetch(`${conf.api}/api/transactions/${accId}`, requestOptions)
+    .then(res => handleResponse(res, getAllAccountHistoryTrans, accId))
     .then(data => data)
     .catch(err => err)
 }

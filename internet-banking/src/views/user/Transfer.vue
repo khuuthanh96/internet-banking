@@ -21,7 +21,7 @@
                 <h3 class="text-warning">Input your OTP Code:</h3> 
                 <input class="text-center" type="text" v-model="optCode">
                 <p>OTP code has send to your email address. Please check your email!</p>
-                <p class="text-danger" v-show="error">{{error}}</p>
+                <p class="text-danger" v-show="myerror">{{myerror}}</p>
               </div>
               <div class="modal-footer">
                 <button 
@@ -202,7 +202,7 @@ export default {
         phone: ""
       },
       transactionId: null,
-      error: null
+      myerror: null
     };
   },
   computed: {
@@ -243,7 +243,7 @@ export default {
     handleTransfer() {
       const self = this;
       if (self.optCode === "") {
-        self.error = "please input OPT code";
+        self.myerror = "please input OPT code";
         return;
       }
       self.verifyTransaction({
@@ -267,7 +267,7 @@ export default {
             phone: ""
           };
           self.transactionId = null;
-          self.error = null;
+          self.myerror = null;
 
           $('#myModel').modal('toggle');
         }
