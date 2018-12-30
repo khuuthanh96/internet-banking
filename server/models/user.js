@@ -11,6 +11,7 @@ const userSchema = mongoose.Schema({
         enum: ['super', 'admin', 'user'],
         default: 'user'
     },
+    favReceiver: [{ type: mongoose.Schema.Types.ObjectId, ref: "Account"}],
     email: { type: String, required: true, trim: true }
 });
 

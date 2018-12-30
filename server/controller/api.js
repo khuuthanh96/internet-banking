@@ -2,6 +2,7 @@ const express = require("express");
 const router = express.Router();
 
 const User = require("../models/user");
+const { Transaction, DEFAULT_FEE } = require("../models/transaction")
 const Account = require("../models/account");
 
 //check roles function
@@ -145,7 +146,24 @@ router.get("/account/:accId", async (req, res) => {
     if(!account) return res.json({ success: false, message: "Get account info failed"});
 
     if (req.user.uID != account.userID) { //check is account owner
-        let accDoRequest = await Account.getAccount(req.user.uID); //check is super admin
+        let accDoRequest = await User.getUser(req.user.uID); //check is super admin
+        if (accDoRequest.roles !== "super") {
+            delete account.balance;
+        }
+    };
+
+    res.json({ success: true, message: "success", account });
+});
+
+//get account info with number
+router.get("/account/number/:accNumber", async (req, res) => {
+    const accNumber = req.params.accNumber;
+
+    let account = await Account.getAccountWithNumber(accNumber);
+    if(!account) return res.json({ success: false, message: "Account not found"});
+
+    if (req.user.uID != account.userID) { //check is account owner
+        let accDoRequest = await User.getUser(req.user.uID); //check is super admin
         if (accDoRequest.roles !== "super") {
             delete account.balance;
         }
@@ -196,4 +214,59 @@ router.delete("/account/:accId", async (req, res) => {
     res.json({ success: true, message: "success", account });
 });
 
+//=========================================TRANSACTION=========================================
+router.post("/transaction/:accId", async (req, res) => {
+    const accId = req.params.accId;
+    const {accDes, description, feeCharger} = req.body;
+    const total = parseFloat(req.body.total);
+
+    let account = await Account.getAccount(accId);
+    if(!account) return res.json({ success: false, message: "Get account info failed"});
+
+    if (account.userID != req.user.uID) {
+        res.json({ success: false, message: "You don't have right" });
+        return;
+    }
+
+    if (feeCharger && account.balance - DEFAULT_FEE < total) {
+        res.json({ success: false, message: "Account's balance not enough" });
+        return;
+    } else if (account.balance < total - DEFAULT_FEE) {
+        res.json({ success: false, message: "Account's balance not enough" });
+        return;
+    }
+
+    Transaction.createTransaction(accId, accDes, total, description, feeCharger)
+        .then(trans => {
+            trans.accountSrcNumber = account.number
+            res.json({ success: true, message: "success", trans });
+        })
+        .catch(err => {
+            console.log("hehe", err)
+            res.json({ success: false, message: err });
+        });
+});
+
+router.put("/transaction/verify/:transId", async (req, res) => {
+    const transId = req.params.transId;
+    const opt = req.body.opt;
+
+    const trans = await Transaction.verifyTransaction(transId, opt)
+    if (!trans) {
+        res.json({ success: false, message: "Verify transaction failed" });
+        return;
+    }
+
+    let success;
+    success = await Account.addTransaction(trans.accountSrc, trans._id);
+    if (!success) {
+        console.log("/transaction/verify/:transId addTransaction: failed")
+    }
+    success = await Account.addTransaction(trans.accountDes, trans._id);
+    if (!success) {
+        console.log("/transaction/verify/:transId addTransaction: failed")
+    }
+
+    res.json({ success: true, message: "success", trans });
+});
 module.exports = router;

@@ -10,7 +10,10 @@ export const userService = {
     addAccount,
     getUserAccounts,
     rechargeMoney,
-    closeAccount
+    closeAccount,
+    getAccount,
+    createTransaction,
+    verifyTransaction
 };
 
 //authenticate api
@@ -132,6 +135,18 @@ function getUserAccounts(userID) {
     .catch(err => err)
 }
 
+function getAccount(accNumber) {
+    const requestOptions = {
+        method: 'GET',
+        headers: { ...authHeader(), 'Content-Type': 'application/json' }
+    };
+
+    return fetch(`${conf.api}/api/account/number/${accNumber}`, requestOptions)
+    .then(res => handleResponse(res, getAccount, accNumber))
+    .then(data => data)
+    .catch(err => err)
+}
+
 function rechargeMoney(infoObj) {
     const requestOptions = {
         method: 'PUT',
@@ -157,6 +172,39 @@ function closeAccount(accID) {
     .catch(err => err)
 }
 
+//user api
+function createTransaction(infoObj) {
+    const requestOptions = {
+        method: 'POST',
+        headers: { ...authHeader(), 'Content-Type': 'application/json' },
+        body: JSON.stringify({
+            accDes: infoObj.accDes, 
+            description: infoObj.description,
+            feeCharger: infoObj.feeCharger,
+            total: infoObj.total
+        })
+    };
+
+    return fetch(`${conf.api}/api/transaction/${infoObj.accID}`, requestOptions)
+    .then(res => handleResponse(res, createTransaction, infoObj))
+    .then(data => data)
+    .catch(err => err)
+}
+
+function verifyTransaction(infoObj) {
+    const requestOptions = {
+        method: 'PUT',
+        headers: { ...authHeader(), 'Content-Type': 'application/json' },
+        body: JSON.stringify({
+            opt: infoObj.optCode
+        })
+    };
+
+    return fetch(`${conf.api}/api/transaction/verify/${infoObj.transID}`, requestOptions)
+    .then(res => handleResponse(res, verifyTransaction, infoObj))
+    .then(data => data)
+    .catch(err => err)
+}
 //helper function
 function handleResponse(response, cb, param1, param2, param3) {
     return response.text()

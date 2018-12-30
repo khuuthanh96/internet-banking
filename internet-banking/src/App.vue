@@ -15,12 +15,12 @@
       <div class="text-center" v-if="alert.message" :class="`alert ${alert.type}`">{{alert.message}}</div>
     </div>
 
-    <div class="footer">
+    <!-- <div class="footer">
         <p>  
           © 2018 Copyright - FIT HCMUS - CNM Final Project <br />
           MSSV: 1512510 - 1512501 - 1512540
         </p>
-    </div>
+    </div> -->
 
 
   </div>

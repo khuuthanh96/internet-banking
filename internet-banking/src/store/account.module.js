@@ -99,6 +99,19 @@ const actions = {
             });
     },
 
+    getAccount({dispatch, commit}, accNumber) {
+        return userService.getAccount(accNumber)
+            .then(data => {
+                if(data && !data.success) {
+                    dispatch('alert/error', data.message, {root: true});
+                };
+  
+                return data;
+            }, error => {
+                dispatch('alert/error', error, { root: true });
+            });
+    },
+
     rechargeMoney({dispatch, commit}, infoObj) {
         commit('addingRequest');
 
@@ -133,6 +146,37 @@ const actions = {
                 return data;
             }, error => {
                 commit('addingFailure');
+                dispatch('alert/error', error, { root: true });
+            });
+    },
+
+    createTransaction({dispatch, commit}, infoObj) {
+        commit('addingRequest');
+
+        return userService.createTransaction(infoObj)
+            .then(data => {
+                if(data && !data.success) {
+                    dispatch('alert/error', data.message, {root: true});
+                };
+
+                commit('addingSuccess');
+                return data;
+            }, error => {
+                commit('addingFailure');
+                dispatch('alert/error', error, { root: true });
+            });
+    },
+
+    verifyTransaction({dispatch, commit}, infoObj) {
+        return userService.verifyTransaction(infoObj)
+            .then(data => {
+                if(data && !data.success) {
+                    dispatch('alert/error', data.message, {root: true});
+                } else {
+                    dispatch('alert/success', "Your transaction successful", {root: true});
+                };
+                return data;
+            }, error => {
                 dispatch('alert/error', error, { root: true });
             });
     }

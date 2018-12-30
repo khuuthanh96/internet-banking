@@ -9,6 +9,8 @@ import Recharge from './views/admin/Recharge.vue'
 
 import Accounts from './views/user/Accounts.vue'
 import Transfer from './views/user/Transfer.vue'
+import Transactions from './views/user/Transactions.vue'
+import SettingFavReceiver from './views/user/SettingFavReceiver.vue'
 
 Vue.use(Router)
 
@@ -86,7 +88,17 @@ export const router = new Router({
       name: 'transfer',
       component: Transfer
     },
-    
+    {
+      path: '/setreceiver',
+      name: 'setreceiver',
+      component: SettingFavReceiver
+    },
+    {
+      path: '/transaction',
+      name: 'transaction',
+      component: Transactions
+    },
+
     // otherwise redirect to home
     { path: '*', redirect: '/' }
   ]

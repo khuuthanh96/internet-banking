@@ -17,20 +17,5 @@
     <!-- built files will be auto injected -->
     <script src="https://www.google.com/recaptcha/api.js?onload=vueRecaptchaApiLoaded&render=explicit" async defer></script> 
     <script src="https://code.jquery.com/jquery-3.3.1.min.js" integrity="sha256-FgpCb/KJQlLNfOu91ta32o/NMZxltwRo8QtmkMRdAu8=" crossorigin="anonymous"></script>
-    <script>
-      $('input.number').keyup(function(event) {
-
-      // skip for arrow keys
-      if(event.which >= 37 && event.which <= 40) return;
-
-      // format number
-      $(this).val(function(index, value) {
-        return value
-        .replace(/\D/g, "")
-        .replace(/\B(?=(\d{3})+(?!\d))/g, ",")
-        ;
-      });
-      });
-    </script>
   </body>
 </html>

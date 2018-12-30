@@ -188,7 +188,7 @@ export default {
 };
 </script>
 
-<style lang="css" scoped>
+<style lang="css">
 .plaintext {
   display: block;
   width: 100%;
