@@ -9,6 +9,7 @@ const User = require("../models/user");
 
 //add local strategy
 passport.use(new LocalStrategy({usernameField: "username", session: false}, (username, password, done) => {
+    console.log(username, password)
     User.findOne({ username })
     .then(user => {
         if (!user) return done(null, false, {message: "Username or Password is incorret"});
