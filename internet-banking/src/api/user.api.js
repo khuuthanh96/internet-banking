@@ -10,7 +10,13 @@ export const userService = {
     addAccount,
     getUserAccounts,
     rechargeMoney,
-    closeAccount
+    closeAccount,
+    getAccount,
+    createTransaction,
+    verifyTransaction,
+    getAllAccountHistoryTrans,
+    getHintOfUser,
+    addHintForUser
 };
 
 //authenticate api
@@ -132,6 +138,18 @@ function getUserAccounts(userID) {
     .catch(err => err)
 }
 
+function getAccount(accNumber) {
+    const requestOptions = {
+        method: 'GET',
+        headers: { ...authHeader(), 'Content-Type': 'application/json' }
+    };
+
+    return fetch(`${conf.api}/api/account/number/${accNumber}`, requestOptions)
+    .then(res => handleResponse(res, getAccount, accNumber))
+    .then(data => data)
+    .catch(err => err)
+}
+
 function rechargeMoney(infoObj) {
     const requestOptions = {
         method: 'PUT',
@@ -153,6 +171,80 @@ function closeAccount(accID) {
 
     return fetch(`${conf.api}/api/account/${accID}`, requestOptions)
     .then(res => handleResponse(res, closeAccount, accID))
+    .then(data => data)
+    .catch(err => err)
+}
+
+//user api
+function createTransaction(infoObj) {
+    const requestOptions = {
+        method: 'POST',
+        headers: { ...authHeader(), 'Content-Type': 'application/json' },
+        body: JSON.stringify({
+            accDes: infoObj.accDes, 
+            description: infoObj.description,
+            feeCharger: infoObj.feeCharger,
+            total: infoObj.total
+        })
+    };
+
+    return fetch(`${conf.api}/api/transaction/${infoObj.accID}`, requestOptions)
+    .then(res => handleResponse(res, createTransaction, infoObj))
+    .then(data => data)
+    .catch(err => err)
+}
+
+function verifyTransaction(infoObj) {
+    const requestOptions = {
+        method: 'PUT',
+        headers: { ...authHeader(), 'Content-Type': 'application/json' },
+        body: JSON.stringify({
+            opt: infoObj.optCode
+        })
+    };
+
+    return fetch(`${conf.api}/api/transaction/verify/${infoObj.transID}`, requestOptions)
+    .then(res => handleResponse(res, verifyTransaction, infoObj))
+    .then(data => data)
+    .catch(err => err)
+}
+
+function getAllAccountHistoryTrans(accId) {
+    const requestOptions = {
+        method: 'GET',
+        headers: { ...authHeader(), 'Content-Type': 'application/json' }
+    };
+
+    return fetch(`${conf.api}/api/transactions/${accId}`, requestOptions)
+    .then(res => handleResponse(res, getAllAccountHistoryTrans, accId))
+    .then(data => data)
+    .catch(err => err)
+}
+
+function addHintForUser(infoObj) {
+    const requestOptions = {
+        method: 'POST',
+        headers: { ...authHeader(), 'Content-Type': 'application/json' },
+        body: JSON.stringify({
+            username: infoObj.username,
+            accNumber: infoObj.accNumber
+        })
+    };
+
+    return fetch(`${conf.api}/api/user/hintAccnumber/${infoObj.userId}`, requestOptions)
+    .then(res => handleResponse(res, addHintForUser, infoObj))
+    .then(data => data)
+    .catch(err => err)
+}
+
+function getHintOfUser(userId) {
+    const requestOptions = {
+        method: 'GET',
+        headers: { ...authHeader(), 'Content-Type': 'application/json' }
+    };
+
+    return fetch(`${conf.api}/api/hint/user/${userId}`, requestOptions)
+    .then(res => handleResponse(res, getHintOfUser, userId))
     .then(data => data)
     .catch(err => err)
 }

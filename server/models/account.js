@@ -1,12 +1,11 @@
 const mongoose = require("mongoose");
-const Transaction = require("./transaction");
 const User = require("./user");
 
 const autoIncrement = require('mongoose-auto-increment');
 const connection = mongoose.createConnection(process.env.DATABASE_LOCAL_URL);
 
 const ActiveAccount = true,
-      ClosedAccount = false
+      ClosedAccount = false;
 
 autoIncrement.initialize(connection);
 
@@ -40,34 +39,6 @@ class Account extends AccountModel {
             });
     }
 
-    static async doTransaction(accountSrc, accountDes, total) {
-        let account;
-        //check account exist
-        account = await this.getAccount(accountDes);
-        if (!account) return false;
-
-        account = await this.getAccount(accountSrc);
-        if (!account) return false;
-
-        //check balance
-        if(total >= account.balance) return false
-
-        //update balance
-        account = await this.updateBalance(accountSrc, total, false);
-        if (!account) return false;
-
-        account = await this.updateBalance(accountDes, total, true);
-        if (!account) return false;
-
-        let trans = await Transaction.createTransaction(accountSrc, accountDes, total);
-        if(!trans) return false;
-
-        trans = await this.addTransaction(accountSrc, trans._id)
-        if(!trans) return false;
-
-        return trans;
-    };
-
     static getAccount(accountId) {
         return Account.findOne({ _id: accountId, status: ActiveAccount })
             .then(async (account) => {
@@ -92,6 +63,31 @@ class Account extends AccountModel {
                 return false;
             });
     };
+
+    static getAccountWithNumber(accNumber) {
+        return Account.findOne({ number: accNumber, status: ActiveAccount })
+        .then(async (account) => {
+            if (!account) return false;
+            const acc = account.toObject();
+
+            const user = await User.getUser(acc.userID);
+            if(!user) {
+                acc.owner = "";
+                acc.phone = "";
+                acc.email = "";
+            }
+
+            acc.owner = user.name;
+            acc.phone = user.phone;
+            acc.email = user.email;
+
+            return acc;
+        })
+        .catch(err => {
+            console.log("Account.find: got error: ", err.message);
+            return false;
+        });  
+    }
 
     static async getAllAccount(doerID) {
         const doer = await User.getUser(doerID);
@@ -151,7 +147,7 @@ class Account extends AccountModel {
 
         const account = await this.getAccount(accountId);
         if (!account) return false;
-
+   
         if(total <= 0) return false;
 
         let newBalance = 0;

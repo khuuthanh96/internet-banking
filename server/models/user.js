@@ -1,5 +1,6 @@
 const mongoose = require("mongoose");
 const { hash, compare } = require("bcrypt");
+const Hint = require("./hint");
 
 const userSchema = mongoose.Schema({
     username: { type: String, required: true, unique: true, trim: true },
@@ -11,6 +12,7 @@ const userSchema = mongoose.Schema({
         enum: ['super', 'admin', 'user'],
         default: 'user'
     },
+    hintAccnumber: [{ type: mongoose.Schema.Types.ObjectId, ref: "Hint"}],
     email: { type: String, required: true, trim: true }
 });
 
@@ -72,6 +74,22 @@ class User extends UserModel {
                 console.log(`/user/:id -> User.findById: ${err}`);
                 return false;
             })
+    }
+
+    static async addHintAccnumber(userID, accNumber, username) {
+        const u = await User.getUser(userID);
+        if (!u) return false;
+
+        const newHint = await Hint.createHintAccount(accNumber, username)
+        if (!newHint) return false;
+
+        u.hintAccnumber.push(newHint._id);
+        return User.findByIdAndUpdate(userID, {$set: {hintAccnumber: u.hintAccnumber}})
+            .then(_ => newHint)
+            .catch(err => {
+                console.log("User.addHintAccnumber: got error: ", err.message);
+                return false;
+            });
     }
 };
 
