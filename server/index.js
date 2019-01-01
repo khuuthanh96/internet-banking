@@ -26,10 +26,14 @@ app.use("/api", passport.authenticate("jwt", {session: false}), apiRouter);
 
 http.listen(process.env.PORT,() => console.log(`Server listening on port: ${process.env.PORT}`));
 
-// const User = require("./models/user")
-// const init = async () => {
-//     // await User.signUp("admin1", "123", "Admin Thanh", "0348882382");
-//     // await User.signUp("user132", "123", "User Châu", "0728324321");
-
-// }
-// init();
+//const User = require("./models/user")
+//const init = async () => {
+    // await User.signUp("admin1", "123", "Admin Thanh", "0348882382");
+    // await User.signUp("user132", "123", "User Châu", "0728324321");
+   // await User.signUp("admin1", "123", "Admin Thanh", "0348882382", "admin1@gmail.com");
+    //await User.signUp("user132", "123", "User Châu", "0728324321", "user123@gmail.com");
+    //await User.signUp("admin1@gmail.com", "123", "Admin Thanh", "0348882382","admin1@gmail.com");
+    //await User.signUp("user@gmail.com", "123", "User Thanh", "0348882382", "user@gmail.com");
+    //await User.signIn("admin@gmail.com", "123", "User Thanh", "0348882382", "admin@gmail.com");
+//}
+//init();

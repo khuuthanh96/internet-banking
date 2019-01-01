@@ -123,12 +123,22 @@ export default {
 
 .edit-btn {
   float: right;
-  vertical-align: none;
-  font-size: 20px;
+  font-size: 25px;
   display: block;
 }
 
 .remove-btn {
   margin-bottom: 20px;
+}
+#delbtn span
+{
+  display: none;
+}
+#delbtn
+{
+  background-image: url("./../../assets/delete.png");
+  background-position: center; /* Center the image */
+  background-repeat: no-repeat; /* Do not repeat the image */
+  background-size: cover;
 }
 </style>
