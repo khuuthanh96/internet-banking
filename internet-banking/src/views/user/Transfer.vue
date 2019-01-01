@@ -335,4 +335,22 @@ export default {
 </script>
 
 <style lang="css">
+#receiver
+{
+  float: left;
+  width: 90%;
+  display: inline;
+}
+#receiver + button
+{
+  height: 34px;
+  font-size: 16px;
+}
+@media only screen and (min-width: 767px) and (max-width: 1024px)
+{
+  #receiver
+  {
+    width: 85%;
+  }
+}
 </style>

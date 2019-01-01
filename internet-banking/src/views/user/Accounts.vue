@@ -123,8 +123,7 @@ export default {
 
 .edit-btn {
   float: right;
-  vertical-align: none;
-  font-size: 20px;
+  font-size: 25px;
   display: block;
 }
 
