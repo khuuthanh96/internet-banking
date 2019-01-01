@@ -131,4 +131,15 @@ export default {
 .remove-btn {
   margin-bottom: 20px;
 }
+#delbtn span
+{
+  display: none;
+}
+#delbtn
+{
+  background-image: url("./../../assets/delete.png");
+  background-position: center; /* Center the image */
+  background-repeat: no-repeat; /* Do not repeat the image */
+  background-size: cover;
+}
 </style>

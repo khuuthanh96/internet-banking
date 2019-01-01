@@ -163,10 +163,6 @@ export default {
 }
 @media only screen and (min-height: 736px) 
 {
-  #accounts + .temp
-  {
-    height: calc(100vh - 95vh);
-  }
   #transfer + .temp
   {
     height: calc(100vh - 740px);
