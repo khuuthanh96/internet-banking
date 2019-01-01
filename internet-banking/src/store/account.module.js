@@ -63,7 +63,7 @@ const actions = {
                     commit('addingFailure');
                     dispatch('alert/error', data.message, {root: true});
                 };
-
+                
                 return data
             }, error => {
                 commit('addingFailure');

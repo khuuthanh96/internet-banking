@@ -30,7 +30,6 @@
         </div>
 
         <TransactionBox
-          v-model="transList"
           v-for="t in transSelectedAcc"
           :key="t._id"
           :numberSrc="t.accountSrcNumber"

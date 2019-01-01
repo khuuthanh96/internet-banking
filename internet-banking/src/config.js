@@ -4,6 +4,6 @@ export default {
     },
 
     prod: {
-        api: ""
+        api: "https://final-cnm-api.herokuapp.com"
     }
 }
