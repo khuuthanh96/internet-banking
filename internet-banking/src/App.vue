@@ -76,7 +76,7 @@ export default {
 #transfer + .temp
 {
   /* height: 70px; */
-  height: calc(100vh - 625px);
+  height: calc(100vh - 704px);
 }
 #receiver + .temp
 {
@@ -161,11 +161,11 @@ export default {
     height: 0px;
   }
 }
-@media only screen and (min-height: 736px) 
+@media only screen and (max-height: 736px) 
 {
   #transfer + .temp
   {
-    height: calc(100vh - 740px);
+    height: 0px;
   }
 }
 @media only screen and (min-height: 665px) 

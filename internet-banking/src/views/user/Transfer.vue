@@ -335,20 +335,20 @@ export default {
 </script>
 
 <style lang="css">
-#receiver
+#receiver.form-control
 {
   float: left;
   width: 90%;
   display: inline;
 }
-#receiver + button
+#receiver.form-control + button
 {
   height: 34px;
   font-size: 16px;
 }
 @media only screen and (min-width: 767px) and (max-width: 1024px)
 {
-  #receiver
+  #receiver.form-control
   {
     width: 85%;
   }
