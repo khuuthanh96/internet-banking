@@ -37,7 +37,7 @@
           </div>
           <div class="modal-body">
             <p v-if="listAccount.length < 2">Must have at least 1 account</p>
-            <p v-else-if="accSelected.balance > 0">This account <b class="text-warning">has balance</b>! Please choose another account to transfer before <b class="text-danger">close</b>.</p>
+            <p v-else-if="accSelected.balance > 0">This account <b class="text-warning">has balance</b>! Please choose another account to transfer before <b class="text-danger">closing</b>.</p>
             <p v-else>Are you sure!</p>        
           </div>
           <div class="modal-footer">

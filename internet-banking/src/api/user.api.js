@@ -1,6 +1,6 @@
 import config from '../config';
 
-const conf = config['dev']
+const conf = config['prod']
 
 export const userService = {
     login,
