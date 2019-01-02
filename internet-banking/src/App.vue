@@ -161,7 +161,7 @@ export default {
     height: 0px;
   }
 }
-@media only screen and (max-height: 736px) 
+@media only screen and (max-height: 710px) 
 {
   #transfer + .temp
   {
